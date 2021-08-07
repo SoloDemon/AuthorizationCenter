@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-authorization-center
+  namespace: &namespace
+spec:
+  rules:
+  - host: &ingressHost
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: authorization-center
+            port:
+              number: 5000

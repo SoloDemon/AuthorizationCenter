@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authorization-center-deployment
+  labels:
+    name: authorization-center
+  namespace: &namespace
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+        name: authorization-center
+  template:
+    metadata:
+      labels:
+        name: authorization-center
+    spec:
+      containers:
+        - name: authorization-center
+          image: harbor.hwyuan.com/&project/authorizationcenter:&version
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
+          env:
+            - name: ASPNETCORE_ENVIRONMENT 
+              value: "&runtime" 
+      imagePullSecrets:
+        - name: harbor-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authorization-center
+  namespace: &namespace
+  labels:
+    name: authorization-center
+spec:
+  selector:
+    name: authorization-center
+  ports:
+    - name: authorization-center-http
+      port: 5000
+      targetPort: 5000
