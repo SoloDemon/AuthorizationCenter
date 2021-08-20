@@ -1,14 +1,14 @@
-﻿using Interfaces;
-using Interfaces.Validation;
-using Microsoft.AspNetCore.Identity;
-using Models;
-using Models.Validation;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using FrameworkCore.Security;
+using Interfaces.Validation;
+using Interfaces.Validation.RequestValidator;
+using Microsoft.AspNetCore.Identity;
+using Models;
+using Models.Validation;
 
 namespace Services.Validation
 {
@@ -17,16 +17,17 @@ namespace Services.Validation
     /// </summary>
     public class PhoneCaptionExtensionGrantValidator : IExtensionGrantValidator
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ICachingServices _cachingServices;
         private readonly AesEncryption _aesEncryption;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IVerificationCodeRequestValidator _verificationCodeRequestValidator;
 
         public PhoneCaptionExtensionGrantValidator(UserManager<ApplicationUser> userManager,
-            ICachingServices cachingServices, AesEncryption aesEncryption)
+            AesEncryption aesEncryption,
+            IVerificationCodeRequestValidator verificationCodeRequestValidator)
         {
             _userManager = userManager;
-            _cachingServices = cachingServices;
             _aesEncryption = aesEncryption;
+            _verificationCodeRequestValidator = verificationCodeRequestValidator;
         }
 
         public async Task ValidateAsync(ExtensionGrantValidationContext context)
@@ -35,8 +36,7 @@ namespace Services.Validation
             {
                 var phoneNumber = context.Request.Raw["phoneNumber"];
                 var caption = context.Request.Raw["caption"];
-                var captionCache = await _cachingServices.GetAsync($"{phoneNumber}_Caption");
-                if (captionCache != caption)
+                if (!await _verificationCodeRequestValidator.SmsVerificationCodeValidateRequest(phoneNumber, caption))
                 {
                     context.Result = new GrantValidationResult
                     {
@@ -45,7 +45,7 @@ namespace Services.Validation
                     };
                     return;
                 }
-                await _cachingServices.DeleteAsync($"{phoneNumber}_Caption");
+
                 var user = _userManager.Users.FirstOrDefault(x => x.PhoneNumber == phoneNumber);
                 var roles = await _userManager.GetRolesAsync(user);
                 if (user != null)
@@ -55,9 +55,11 @@ namespace Services.Validation
                         GrantType,
                         role: roles,
                         user: user,
-                        claims: new List<Claim> {
+                        claims: new List<Claim>
+                        {
                             new("WeChatOpenId",
-                                $"{await _aesEncryption.AesEncryptAsync(user.Id.ToString())}")}
+                                $"{await _aesEncryption.AesEncryptAsync(user.Id.ToString())}")
+                        }
                     );
                 else
                     context.Result = new GrantValidationResult

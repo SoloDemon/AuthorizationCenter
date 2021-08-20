@@ -5,32 +5,31 @@ using System.Linq;
 using System.Threading.Tasks;
 using FrameworkCore.Security;
 using FrameworkCore.Validation;
-using Interfaces;
-using Interfaces.Validation;
+using Interfaces.Validation.RequestValidator;
 using Microsoft.AspNetCore.Identity;
 using Models;
 using Models.Dtos.Register;
 using Models.Validation;
 
-namespace Services.Validation
+namespace Services.Validation.RequestValidator
 {
     public class RegisterRequestValidator : IRegisterRequestValidator
     {
         private readonly AesEncryption _aesEncryption;
-        private readonly ICachingServices _cachingServices;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IVerificationCodeRequestValidator _verificationCodeRequestValidator;
 
         public RegisterRequestValidator(
             UserManager<ApplicationUser> userManager,
             RoleManager<ApplicationRole> roleManager,
             AesEncryption aesEncryption,
-            ICachingServices cachingServices)
+            IVerificationCodeRequestValidator verificationCodeRequestValidator)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _aesEncryption = aesEncryption;
-            _cachingServices = cachingServices;
+            _verificationCodeRequestValidator = verificationCodeRequestValidator;
         }
 
         /// <summary>
@@ -61,17 +60,15 @@ namespace Services.Validation
             var model = new PhoneNumberInput
             {
                 Caption = parameters["caption"],
-                PhoneNumber = parameters["phoneNUmber"],
+                PhoneNumber = parameters["phoneNumber"],
                 Role = parameters["role"] ?? "Guest"
             };
             var validationResult = ValidatorProperty(model);
             if (validationResult != null)
                 return validationResult;
-            var caption = await _cachingServices.GetAsync($"{model.PhoneNumber}_Caption");
-            if (model.Caption != caption)
+            if (!await _verificationCodeRequestValidator.SmsVerificationCodeValidateRequest(model.PhoneNumber,
+                model.Caption))
                 return new RegisterRequestValidationResult("验证码不正确", "验证码不正确,请重新输入验证码.");
-            //删除验证码缓存
-            await _cachingServices.DeleteAsync($"{model.PhoneNumber}_Caption");
             var user = _userManager.Users.FirstOrDefault(x => x.PhoneNumber == model.PhoneNumber);
             if (user is not null)
                 return new RegisterRequestValidationResult("手机号已存在", "当前手机号已存在,请更换手机号注册.");

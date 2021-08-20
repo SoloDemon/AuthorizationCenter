@@ -30,22 +30,6 @@ namespace FrameworkCore.Extensions.Client
                         ValidAudience = jwtOption.Audience, //Audience
                         ValidIssuer = jwtOption.Issuer, //Issuer，这两项和前面签发jwt的设置一致
                         IssuerSigningKey = new RsaSecurityKey(rsa)
-                        //IssuerSigningKeyValidator = (m, n, z) =>
-                        // {
-                        //     Console.WriteLine("This is IssuerValidator");
-                        //     return true;
-                        // },
-                        //IssuerValidator = (m, n, z) =>
-                        // {
-                        //     Console.WriteLine("This is IssuerValidator");
-                        //     return "http://localhost:5726";
-                        // },
-                        //AudienceValidator = (m, n, z) =>
-                        //{
-                        //    Console.WriteLine("This is AudienceValidator");
-                        //    return true;
-                        //    //return m != null && m.FirstOrDefault().Equals(this.Configuration["Audience"]);
-                        //},//自定义校验规则，可以新登录后将之前的无效
                     };
                 });
             return builder;

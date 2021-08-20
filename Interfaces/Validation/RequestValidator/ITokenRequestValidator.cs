@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Models.Validation;
 
-namespace Interfaces.Validation
+namespace Interfaces.Validation.RequestValidator
 {
     /// <summary>
     ///     请求token验证

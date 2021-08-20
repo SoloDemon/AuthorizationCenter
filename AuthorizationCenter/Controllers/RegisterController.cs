@@ -1,12 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Threading.Tasks;
 using FrameworkCore.Extensions;
 using Interfaces;
+using Microsoft.AspNetCore.Mvc;
 
 namespace AuthorizationCenter.Controllers
 {
@@ -14,12 +10,14 @@ namespace AuthorizationCenter.Controllers
     [ApiController]
     public class RegisterController : ControllerBase
     {
-
         private readonly IAuthorizationServices _authorizationService;
+        private readonly IUserManagerServices _userManagerServices;
 
-        public RegisterController(IAuthorizationServices authorizationService)
+        public RegisterController(IAuthorizationServices authorizationService,
+            IUserManagerServices userManagerServices)
         {
             _authorizationService = authorizationService;
+            _userManagerServices = userManagerServices;
         }
 
         /// <summary>
@@ -27,7 +25,6 @@ namespace AuthorizationCenter.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        [Route("Register")]
         public async Task Register()
         {
             #region 无参数时取传递的参数
@@ -42,7 +39,7 @@ namespace AuthorizationCenter.Controllers
 
             #endregion
 
-            var result = await _authorizationService.RegisterAsync(queryList);
+            var result = await _userManagerServices.RegisterAsync(queryList);
             await result.ExecuteAsync(HttpContext);
         }
 
@@ -60,11 +57,10 @@ namespace AuthorizationCenter.Controllers
         public async Task Register(string nickName, string userName, string password, string confirmPassword,
             string email)
         {
-
             var queryList = HttpContext.Request.Query.AsNameValueCollection();
             queryList.Set("registerType", "Default");
             queryList.Set("role", null);
-            var result = await _authorizationService.RegisterAsync(queryList);
+            var result = await _userManagerServices.RegisterAsync(queryList);
             await result.ExecuteAsync(HttpContext);
         }
 
@@ -88,7 +84,7 @@ namespace AuthorizationCenter.Controllers
             var queryList = HttpContext.Request.Query.AsNameValueCollection();
             queryList.Set("registerType", "WeChat");
             queryList.Set("role", null);
-            var result = await _authorizationService.RegisterAsync(queryList);
+            var result = await _userManagerServices.RegisterAsync(queryList);
             await result.ExecuteAsync(HttpContext);
         }
 
@@ -105,7 +101,7 @@ namespace AuthorizationCenter.Controllers
             var queryList = HttpContext.Request.Query.AsNameValueCollection();
             queryList.Set("registerType", "PhoneNumber");
             queryList.Set("role", null);
-            var result = await _authorizationService.RegisterAsync(queryList);
+            var result = await _userManagerServices.RegisterAsync(queryList);
             await result.ExecuteAsync(HttpContext);
         }
     }

@@ -5,7 +5,6 @@ using FrameworkCore.Helper.Sms;
 using Interfaces;
 using Interfaces.Validation;
 using Models;
-using Newtonsoft.Json;
 using Services.Endpoint;
 
 namespace Services
@@ -58,9 +57,9 @@ namespace Services
         private async Task SendAsync(string phoneNumber)
         {
             var captionNumber = await _cachingServices.GetAsync($"{phoneNumber}_CaptionNumber");
-            var caption = new Random((int)(DateTime.Now.Ticks - 621356256000000000) / 10000).Next(100000, 999999)
+            var caption = new Random((int) (DateTime.Now.Ticks - 621356256000000000) / 10000).Next(100000, 999999)
                 .ToString();
-            await _cachingServices.SetAsync($"{phoneNumber}_CaptionNumber", captionNumber ?? "0",60 * 60 * 24);
+            await _cachingServices.SetAsync($"{phoneNumber}_CaptionNumber", captionNumber ?? "0", 60 * 60 * 24);
             await _smsHelper.SendCaptionAsync(phoneNumber, caption);
             await _cachingServices.SetAsync($"{phoneNumber}_Caption", caption, 60 * 60);
         }

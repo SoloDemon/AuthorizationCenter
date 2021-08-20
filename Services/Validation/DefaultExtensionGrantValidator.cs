@@ -11,7 +11,7 @@ using Models.Validation;
 namespace Services.Validation
 {
     /// <summary>
-    ///    默认扩展授权验证
+    ///     默认扩展授权验证
     /// </summary>
     public class DefaultExtensionGrantValidator : IExtensionGrantValidator
     {

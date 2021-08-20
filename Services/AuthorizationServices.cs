@@ -4,6 +4,7 @@ using System.Collections.Specialized;
 using System.Threading.Tasks;
 using Interfaces;
 using Interfaces.Validation;
+using Interfaces.Validation.RequestValidator;
 using Models;
 using Models.Validation;
 using Services.Endpoint;
@@ -11,27 +12,21 @@ using Services.Endpoint;
 namespace Services
 {
     /// <summary>
-    ///     授权
+    ///     授权服务
     /// </summary>
     public class AuthorizationServices : IAuthorizationServices
     {
         private readonly IJwtServices _jwtServices;
-        private readonly IRegisterRequestValidator _registerRequestValidator;
-        private readonly IRegisterValidator _registerValidator;
         private readonly ISmsSendValidator _smsSendValidator;
         private readonly ITokenRequestValidator _tokenRequestValidator;
 
         public AuthorizationServices(
             IJwtServices jwtServices,
             ITokenRequestValidator tokenRequestValidator,
-            IRegisterRequestValidator registerRequestValidator,
-            IRegisterValidator registerValidator,
             ISmsSendValidator smsSendValidator)
         {
             _jwtServices = jwtServices;
             _tokenRequestValidator = tokenRequestValidator;
-            _registerRequestValidator = registerRequestValidator;
-            _registerValidator = registerValidator;
             _smsSendValidator = smsSendValidator;
         }
 
@@ -85,31 +80,6 @@ namespace Services
         }
 
         /// <summary>
-        ///     注册
-        /// </summary>
-        /// <param name="parameters"></param>
-        /// <returns></returns>
-        public async Task<IEndpointResult> RegisterAsync(NameValueCollection parameters)
-        {
-            try
-            {
-                //验证注册请求
-                var requestResult = await _registerRequestValidator.ValidateRequestAsync(parameters);
-                if (requestResult.IsError)
-                    return RegisterRequestError(requestResult.Error, requestResult.ErrorDescription);
-                //验证注册信息并注册
-                var registerResult = await _registerValidator.ValidateRegisterAsync(parameters);
-                if (registerResult.IsError)
-                    return RegisterRequestError(registerResult.Error, registerResult.ErrorDescription);
-                return new RegisterResult();
-            }
-            catch (Exception e)
-            {
-                return RegisterRequestError(e.Message);
-            }
-        }
-
-        /// <summary>
         ///     成功响应
         /// </summary>
         /// <param name="requestValidationResult">请求验证结果</param>
@@ -138,23 +108,6 @@ namespace Services
             };
 
             return new TokenErrorResult(response);
-        }
-
-        /// <summary>
-        ///     失败响应
-        /// </summary>
-        /// <param name="error">错误</param>
-        /// <param name="errorDescription">错误描述</param>
-        /// <returns></returns>
-        private static RegisterErrorResult RegisterRequestError(string error, string errorDescription = null)
-        {
-            var response = new ErrorResponse
-            {
-                Error = error,
-                ErrorDescription = errorDescription
-            };
-
-            return new RegisterErrorResult(response);
         }
     }
 }

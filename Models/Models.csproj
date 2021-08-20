@@ -8,6 +8,7 @@
     <Compile Remove="Attributes\**" />
     <EmbeddedResource Remove="Attributes\**" />
     <None Remove="Attributes\**" />
+    <None Remove="Dtos\U se r M a na ge r\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -16,4 +17,7 @@
     <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.12.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Dtos\UserManager\" />
+  </ItemGroup>
 </Project>

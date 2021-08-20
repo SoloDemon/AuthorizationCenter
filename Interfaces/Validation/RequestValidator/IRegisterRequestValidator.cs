@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Models.Validation;
 
-namespace Interfaces.Validation
+namespace Interfaces.Validation.RequestValidator
 {
     /// <summary>
     ///     注册请求验证接口

@@ -16,12 +16,12 @@
         public const string ResourceDefault = "Default";
 
         /// <summary>
-        /// GrantType - 自定义手机验证码授权
+        ///     GrantType - 自定义手机验证码授权
         /// </summary>
         public const string ResourcePhoneCaption = "PhoneCaption";
 
         /// <summary>
-        /// GrantType - 自定义手机号授权
+        ///     GrantType - 自定义手机号授权
         /// </summary>
         public const string ResourcePhoneNumber = "PhoneNumber";
     }

@@ -48,7 +48,8 @@ namespace AuthorizationCenter
             #region 注册授权中心
 
             var path = Configuration["Certificates:Path"].Split(',');
-            services.AddAuthorizationCenter().AddSigningCredential(new X509Certificate2(
+            services.AddAuthorizationCenter()
+                .AddSigningCredential(new X509Certificate2(
                     Path.Combine(PlatformServices.Default.Application.ApplicationBasePath,
                         path[0], path[1]),
                     Configuration["Certificates:Password"]))
@@ -114,6 +115,8 @@ namespace AuthorizationCenter
 
             #endregion
 
+            //services.AddAuthorizationClient().AddAuthentication();
+
             #region DI
 
             services.AddTransient<IAuthorizationServices, AuthorizationServices>();
@@ -122,6 +125,7 @@ namespace AuthorizationCenter
             //注入阿里云短信服务，需要注入其他短信服务，可以自行实现短信服务。
             services.AddTransient<ISmsHelper, ALiYunSmsHelper>();
             services.AddTransient<ISmsServices, SmsServices>();
+            services.AddTransient<IUserManagerServices, UserManagerServices>();
 
             #endregion
 
@@ -165,6 +169,8 @@ namespace AuthorizationCenter
             }
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

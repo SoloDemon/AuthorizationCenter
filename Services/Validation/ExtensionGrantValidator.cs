@@ -42,7 +42,7 @@ namespace Services.Validation
                 await validator.ValidateAsync(context);
                 return context.Result;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return new GrantValidationResult(TokenRequestErrors.InvalidGrant);
             }

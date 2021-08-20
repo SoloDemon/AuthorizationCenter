@@ -26,9 +26,9 @@ namespace Services.Validation
             if (!await _cachingServices.ExistAsync($"{phoneNumber}_CaptionNumber"))
                 return new SmsSendValidationResult();
             var captionNumber = int.Parse(await _cachingServices.GetAsync($"{phoneNumber}_CaptionNumber"));
-            return captionNumber < 3 ? new SmsSendValidationResult() :
-                new SmsSendValidationResult("短信发送次数超过", $"手机号:{phoneNumber}短信发送次数超过3次!无法发送短信验证码！");
-
+            return captionNumber < 3
+                ? new SmsSendValidationResult()
+                : new SmsSendValidationResult("短信发送次数超过", $"手机号:{phoneNumber}短信发送次数超过3次!无法发送短信验证码！");
         }
     }
 }

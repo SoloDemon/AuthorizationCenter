@@ -1,11 +1,13 @@
 ﻿using FrameworkCore.Extensions;
 using Interfaces;
 using Interfaces.Validation;
+using Interfaces.Validation.RequestValidator;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Models.Options;
 using Services;
 using Services.Validation;
+using Services.Validation.RequestValidator;
 
 namespace AuthorizationCenter.Extensions
 {
@@ -46,6 +48,11 @@ namespace AuthorizationCenter.Extensions
             return builder;
         }
 
+        /// <summary>
+        ///     注入验证
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
         public static IAuthorizationCenterBuild UseExtensionGrantValidator(this IAuthorizationCenterBuild builder)
         {
             builder.Services.AddTransient<ExtensionGrantValidator>();
@@ -53,6 +60,9 @@ namespace AuthorizationCenter.Extensions
             builder.Services.AddTransient<IRegisterRequestValidator, RegisterRequestValidator>();
             builder.Services.AddTransient<IRegisterValidator, RegisterValidator>();
             builder.Services.AddTransient<ISmsSendValidator, SmsSendValidator>();
+            builder.Services.AddTransient<IChangePasswordRequestValidator, ChangePasswordRequestValidator>();
+            builder.Services.AddTransient<IChangePasswordValidator, ChangePasswordValidator>();
+            builder.Services.AddTransient<IVerificationCodeRequestValidator, VerificationCodeRequestValidator>();
             return builder;
         }
     }

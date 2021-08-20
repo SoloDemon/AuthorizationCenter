@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Interfaces.Validation;
+using Interfaces.Validation.RequestValidator;
 using Models.Validation;
 
-namespace Services.Validation
+namespace Services.Validation.RequestValidator
 {
     /// <summary>
     ///     请求token验证

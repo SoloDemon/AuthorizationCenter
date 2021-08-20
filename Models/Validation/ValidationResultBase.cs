@@ -6,6 +6,26 @@
     public class ValidationResultBase
     {
         /// <summary>
+        ///     失败
+        /// </summary>
+        /// <param name="error">错误</param>
+        /// <param name="errorDescription">错误描述</param>
+        public ValidationResultBase(string error, string errorDescription)
+        {
+            IsError = true;
+            Error = error;
+            ErrorDescription = errorDescription;
+        }
+
+        /// <summary>
+        ///     成功
+        /// </summary>
+        public ValidationResultBase()
+        {
+            IsError = false;
+        }
+
+        /// <summary>
         ///     获取或设置一个值，该值指示验证是否成功。
         /// </summary>
         /// <value>

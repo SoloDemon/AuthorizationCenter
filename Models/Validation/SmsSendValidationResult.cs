@@ -10,11 +10,8 @@
         /// </summary>
         /// <param name="error">错误</param>
         /// <param name="errorDescription">错误描述</param>
-        public SmsSendValidationResult(string error, string errorDescription)
+        public SmsSendValidationResult(string error, string errorDescription) : base(error, errorDescription)
         {
-            IsError = true;
-            Error = error;
-            ErrorDescription = errorDescription;
         }
 
         /// <summary>
@@ -22,7 +19,6 @@
         /// </summary>
         public SmsSendValidationResult()
         {
-            IsError = false;
         }
     }
 }
