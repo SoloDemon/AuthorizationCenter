@@ -1,15 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using FrameworkCore.Security;
+﻿using FrameworkCore.Security;
 using FrameworkCore.Validation;
 using Interfaces.Validation.RequestValidator;
 using Microsoft.AspNetCore.Identity;
 using Models;
 using Models.Dtos.Register;
 using Models.Validation;
+using System.Collections.Specialized;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Services.Validation.RequestValidator
 {
@@ -63,7 +61,7 @@ namespace Services.Validation.RequestValidator
                 PhoneNumber = parameters["phoneNumber"],
                 Role = parameters["role"] ?? "Guest"
             };
-            var validationResult = ValidatorProperty(model);
+            var validationResult = (RegisterRequestValidationResult)ValidationHelper.ValidatorProperty(model);
             if (validationResult != null)
                 return validationResult;
             if (!await _verificationCodeRequestValidator.SmsVerificationCodeValidateRequest(model.PhoneNumber,
@@ -96,7 +94,7 @@ namespace Services.Validation.RequestValidator
                 Portrait = parameters["portrait"],
                 Role = parameters["role"] ?? "Guest"
             };
-            var validationResult = ValidatorProperty(model);
+            var validationResult = (RegisterRequestValidationResult)ValidationHelper.ValidatorProperty(model);
             if (validationResult != null)
                 return validationResult;
             var user = _userManager.Users.FirstOrDefault(x => x.WeChatOpenId == model.WeChatOpenId);
@@ -123,7 +121,7 @@ namespace Services.Validation.RequestValidator
                 Email = parameters["email"],
                 Role = parameters["role"] ?? "Guest"
             };
-            var validationResult = ValidatorProperty(model);
+            var validationResult = (RegisterRequestValidationResult)ValidationHelper.ValidatorProperty(model);
             if (validationResult != null)
                 return validationResult;
             var user = await _userManager.FindByNameAsync(model.UserName);
@@ -132,25 +130,6 @@ namespace Services.Validation.RequestValidator
             if (!await _roleManager.RoleExistsAsync(model.Role))
                 return new RegisterRequestValidationResult("角色不存在", "角色不存在");
             return new RegisterRequestValidationResult();
-        }
-
-
-        /// <summary>
-        ///     验证属性
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        private static RegisterRequestValidationResult ValidatorProperty<T>(T model)
-        {
-            //验证上下文
-            var context = new ValidationContext(model, null, null);
-            //验证结果
-            var results = new List<ValidationResult>();
-            //验证结果
-            if (AttributeValidator.Validator(model, context, results)) return null;
-            var errorMessage = results.FirstOrDefault()?.ErrorMessage;
-            return new RegisterRequestValidationResult(errorMessage, errorMessage);
         }
     }
 }

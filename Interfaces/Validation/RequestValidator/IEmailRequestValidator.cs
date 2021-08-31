@@ -4,13 +4,13 @@ using Models.Validation;
 
 namespace Interfaces.Validation.RequestValidator
 {
-    public interface IChangePasswordRequestValidator
+    public interface IEmailRequestValidator
     {
         /// <summary>
-        ///     验证请求
+        /// 验证Email请求
         /// </summary>
-        /// <param name="parameters"></param>
+        /// <param name="parameter"></param>
         /// <returns></returns>
-        Task<ValidationRequestResult> ValidateRequestAsync(NameValueCollection parameters);
+        Task<ValidationRequestResult> ValidateRequestAsync(NameValueCollection parameter);
     }
 }

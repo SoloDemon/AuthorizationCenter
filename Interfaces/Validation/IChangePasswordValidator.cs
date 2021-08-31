@@ -11,6 +11,6 @@ namespace Interfaces.Validation
         /// </summary>
         /// <param name="parameters">请求参数列表</param>
         /// <returns></returns>
-        Task<ValidationResultBase> ValidateAsync(NameValueCollection parameters);
+        Task<ValidationRequestResult> ValidateAsync(NameValueCollection parameters);
     }
 }

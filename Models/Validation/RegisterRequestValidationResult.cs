@@ -3,7 +3,7 @@
     /// <summary>
     ///     注册用户请求验证结果
     /// </summary>
-    public class RegisterRequestValidationResult : ValidationResultBase
+    public class RegisterRequestValidationResult : ValidationRequestResult
     {
         /// <summary>
         ///     失败

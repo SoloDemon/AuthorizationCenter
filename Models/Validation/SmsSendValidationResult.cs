@@ -3,7 +3,7 @@
     /// <summary>
     ///     短信发送验证结果
     /// </summary>
-    public class SmsSendValidationResult : ValidationResultBase
+    public class SmsSendValidationResult : ValidationRequestResult
     {
         /// <summary>
         ///     失败

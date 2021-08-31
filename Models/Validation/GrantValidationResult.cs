@@ -9,7 +9,7 @@ namespace Models.Validation
     /// <summary>
     ///     身份验证结果
     /// </summary>
-    public class GrantValidationResult : ValidationResultBase
+    public class GrantValidationResult : ValidationRequestResult
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="GrantValidationResult" /> class with an error and description.

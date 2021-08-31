@@ -22,19 +22,19 @@ namespace Services.Validation
         /// </summary>
         /// <param name="parameters">请求参数列表</param>
         /// <returns></returns>
-        public async Task<ValidationResultBase> ValidateAsync(NameValueCollection parameters)
+        public async Task<ValidationRequestResult> ValidateAsync(NameValueCollection parameters)
         {
             var user = await _userManager.FindByIdAsync(parameters["userId"]);
             if (user is null)
-                return new ValidationResultBase("用户不存在", "用户不存在，请更换确认用户名是否正确!");
+                return new ValidationRequestResult("用户不存在", "用户不存在，请更换确认用户名是否正确!");
             var result =
                 await _userManager.ChangePasswordAsync(user, parameters["oldPassword"], parameters["newPassword"]);
             if (result.Succeeded)
-                return new ValidationResultBase();
+                return new ValidationRequestResult();
             var identityError = result.Errors.FirstOrDefault();
             return identityError is not null
-                ? new ValidationResultBase(identityError.Description, identityError.Description)
-                : new ValidationResultBase("修改密码错误", "修改密码错误，请重新尝试");
+                ? new ValidationRequestResult(identityError.Description, identityError.Description)
+                : new ValidationRequestResult("修改密码错误", "修改密码错误，请重新尝试");
         }
     }
 }

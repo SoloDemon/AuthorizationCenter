@@ -41,17 +41,13 @@ namespace Services.Validation
         /// <returns></returns>
         public async Task<RegisterValidationResult> ValidateRegisterAsync(NameValueCollection parameters)
         {
-            switch (parameters["registerType"])
+            return parameters["registerType"] switch
             {
-                case "Default":
-                    return await DefaultValidateRegisterAsync(parameters);
-                case "WeChat":
-                    return await WeChatValidateRegisterAsync(parameters);
-                case "PhoneNumber":
-                    return await PhoneNumberRegisterAsync(parameters);
-                default:
-                    return new RegisterValidationResult("无效的注册类型", "无效的注册类型");
-            }
+                "Default" => await DefaultValidateRegisterAsync(parameters),
+                "WeChat" => await WeChatValidateRegisterAsync(parameters),
+                "PhoneNumber" => await PhoneNumberRegisterAsync(parameters),
+                _ => new RegisterValidationResult("无效的注册类型", "无效的注册类型"),
+            };
         }
 
         /// <summary>

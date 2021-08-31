@@ -2,6 +2,7 @@
 using System.Collections.Specialized;
 using System.Threading.Tasks;
 using Interfaces;
+using Interfaces.UserManager;
 using Interfaces.Validation;
 using Interfaces.Validation.RequestValidator;
 using Microsoft.AspNetCore.Identity;
@@ -13,7 +14,7 @@ namespace Services
     /// <summary>
     ///     用户管理服务
     /// </summary>
-    public class UserManagerServices : IUserManagerServices
+    public class UserManagerServices : IUserManagerServices 
     {
         private readonly IChangePasswordRequestValidator _changePasswordRequestValidator;
         private readonly IChangePasswordValidator _changePasswordValidator;
@@ -22,17 +23,24 @@ namespace Services
         private readonly IRegisterValidator _registerValidator;
         private readonly UserManager<ApplicationUser> _userManager;
 
+        private readonly IResetPasswordRequestValidator _resetPasswordRequestValidator;
+        private readonly IResetPasswordValidator _resetPasswordValidator;
+
         public UserManagerServices(IRegisterRequestValidator registerRequestValidator,
             IRegisterValidator registerValidator,
             UserManager<ApplicationUser> userManager,
             IChangePasswordRequestValidator changePasswordRequestValidator,
-            IChangePasswordValidator changePasswordValidator)
+            IChangePasswordValidator changePasswordValidator, 
+            IResetPasswordRequestValidator resetPasswordRequestValidator,
+            IResetPasswordValidator resetPasswordValidator)
         {
             _registerRequestValidator = registerRequestValidator;
             _registerValidator = registerValidator;
             _userManager = userManager;
             _changePasswordRequestValidator = changePasswordRequestValidator;
             _changePasswordValidator = changePasswordValidator;
+            _resetPasswordRequestValidator = resetPasswordRequestValidator;
+            _resetPasswordValidator = resetPasswordValidator;
         }
 
 
@@ -75,6 +83,37 @@ namespace Services
             if (changePasswordResult.IsError)
                 return RequestError(changePasswordResult.Error, changePasswordResult.ErrorDescription);
             return new SuccessResult();
+        }
+
+        /// <summary>
+        /// 重置密码
+        /// </summary>
+        /// <param name="parameter">参数集合</param>
+        /// <returns></returns>
+        public async Task<ApiResultMessage> ResetPasswordAsync(NameValueCollection parameter)
+        {
+            var requestResult = await _resetPasswordRequestValidator.ValidateRequestAsync(parameter);
+            if (requestResult.IsError)
+                return new ApiResultMessage
+                {
+                    Msg = requestResult.Error,
+                    Status = 200,
+                    Success = false
+                };
+            var resetPasswordResult = await _resetPasswordValidator.ValidationResetPasswordAsync(parameter);
+            if (resetPasswordResult.IsError)
+                return new ApiResultMessage
+                {
+                    Msg = requestResult.Error,
+                    Status = 200,
+                    Success = false
+                };
+            return new ApiResultMessage
+            {
+                Msg = "密码重置成功",
+                Status = 200,
+                Success = true
+            };
         }
 
         /// <summary>

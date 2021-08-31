@@ -5,9 +5,12 @@ using AuthorizationCenter.Extensions;
 using EntityFramework.Core;
 using FrameworkCore.Extensions;
 using FrameworkCore.Extensions.Swagger;
+using FrameworkCore.Helper;
 using FrameworkCore.Helper.Sms;
 using FrameworkCore.Security;
 using Interfaces;
+using Interfaces.Execute;
+using Interfaces.UserManager;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -19,6 +22,7 @@ using Microsoft.Extensions.PlatformAbstractions;
 using Models;
 using Models.Options;
 using Services;
+using Services.Execute;
 using Services.Validation;
 
 namespace AuthorizationCenter
@@ -121,11 +125,18 @@ namespace AuthorizationCenter
 
             services.AddTransient<IAuthorizationServices, AuthorizationServices>();
             services.AddTransient<AesEncryption>();
+            services.AddTransient<EmailHelper>();
             services.AddTransient<IJwtServices, JwtServices>();
             //注入阿里云短信服务，需要注入其他短信服务，可以自行实现短信服务。
             services.AddTransient<ISmsHelper, ALiYunSmsHelper>();
             services.AddTransient<ISmsServices, SmsServices>();
             services.AddTransient<IUserManagerServices, UserManagerServices>();
+            services.AddTransient<IResetPasswordServices, UserManagerServices>();
+            services.AddTransient<IChangePasswordServices, UserManagerServices>();
+            services.AddTransient<IRegisterServices, UserManagerServices>();
+            services.AddTransient<IResetPasswordServices, UserManagerServices>();
+            services.AddTransient<IEmailServices, EmailServices>();
+            services.AddTransient<IEmailExecute, EmailExecute>();
 
             #endregion
 
@@ -134,6 +145,8 @@ namespace AuthorizationCenter
             services.Configure<SecurityOption>(Configuration.GetSection("Security"));
             services.Configure<JwtOption>(Configuration.GetSection("JwtOption"));
             services.Configure<CertificatesOption>(Configuration.GetSection("CertificatesOption"));
+            services.Configure<EmailConfigOption>(Configuration.GetSection("EmailConfig"));
+            services.Configure<CorsOption>(Configuration.GetSection("CorsConfig"));
             //services.Configure<ApiBehaviorOptions>(options =>
             //{
             //    options.SuppressModelStateInvalidFilter = true;

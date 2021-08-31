@@ -12,10 +12,11 @@ namespace Services.Validation.RequestValidator
         /// </summary>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public async Task<ValidationResultBase> ValidateRequestAsync(NameValueCollection parameters)
+        public async Task<ValidationRequestResult> ValidateRequestAsync(NameValueCollection parameters)
         {
             var userId = parameters["userId"];
-            return userId == null ? new ValidationResultBase("请登陆后修改密码。", "获取用户编号失败") : new ValidationResultBase();
+            await Task.Delay(1);
+            return userId == null ? new ValidationRequestResult("请登陆后修改密码。", "获取用户编号失败") : new ValidationRequestResult();
         }
     }
 }

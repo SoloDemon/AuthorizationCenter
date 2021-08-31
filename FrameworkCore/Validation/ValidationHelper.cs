@@ -1,4 +1,8 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text.RegularExpressions;
+using Models.Validation;
 
 namespace FrameworkCore.Validation
 {
@@ -35,6 +39,24 @@ namespace FrameworkCore.Validation
         public static bool IsPhoneNumber(string value)
         {
             return !string.IsNullOrEmpty(value) && Regex.IsMatch(value, PhoneNumberRegex);
+        }
+
+        /// <summary>
+        ///     验证属性
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public static ValidationRequestResult ValidatorProperty<T>(T model)
+        {
+            //验证上下文
+            var context = new ValidationContext(model, null, null);
+            //验证结果
+            var results = new List<ValidationResult>();
+            //验证结果
+            if (AttributeValidator.Validator(model, context, results)) return null;
+            var errorMessage = results.FirstOrDefault()?.ErrorMessage;
+            return new ValidationRequestResult(errorMessage, errorMessage);
         }
     }
 }

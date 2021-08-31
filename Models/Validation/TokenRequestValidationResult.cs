@@ -6,7 +6,7 @@ namespace Models.Validation
     /// <summary>
     ///     Validation result for token requests
     /// </summary>
-    public class TokenRequestValidationResult : ValidationResultBase
+    public class TokenRequestValidationResult : ValidationRequestResult
     {
         /// <summary>
         ///     Initializes a new instance of the <see cref="TokenRequestValidationResult" /> class.

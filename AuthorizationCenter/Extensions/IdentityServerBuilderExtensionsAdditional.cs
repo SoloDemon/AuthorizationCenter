@@ -62,7 +62,10 @@ namespace AuthorizationCenter.Extensions
             builder.Services.AddTransient<ISmsSendValidator, SmsSendValidator>();
             builder.Services.AddTransient<IChangePasswordRequestValidator, ChangePasswordRequestValidator>();
             builder.Services.AddTransient<IChangePasswordValidator, ChangePasswordValidator>();
+            builder.Services.AddTransient<IResetPasswordRequestValidator,ResetPasswordRequestValidator >();
+            builder.Services.AddTransient<IResetPasswordValidator,ResetPasswordValidator >();
             builder.Services.AddTransient<IVerificationCodeRequestValidator, VerificationCodeRequestValidator>();
+            builder.Services.AddTransient<IEmailRequestValidator, EmailRequestValidator>();
             return builder;
         }
     }
